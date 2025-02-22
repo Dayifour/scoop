@@ -1,0 +1,149 @@
+@keyframes titre {
+  0% {
+    display: none;
+    transform: translateX(-300px);
+    opacity: 0;
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    transform: translateX(0);
+    opacity: 1;
+    display: block;
+  }
+}
+#bouge {
+  transform: translateX(-300px);
+  opacity: 0;
+  top: auto;
+  text-align: center;
+  justify-content: center;
+  align-items: center;
+}
+.tag {
+  animation: titre 2s ease-in 2s 0 normal;
+  transition: 2s;
+}
+#menu-icon,
+#menu-icon::before,
+#menu-icon::after {
+  content: "";
+  display: block;
+  width: 20px;
+  height: 3px;
+  background-color: black;
+  float: left;
+}
+
+#menu-icon::before {
+  transform: translateY(-8px);
+}
+
+#menu-icon::after {
+  transform: translateY(6px);
+}
+#menu-icon {
+  font-size: 2rem;
+  cursor: pointer;
+  display: none;
+}
+.navbar a:hover {
+  color: #f74343;
+  transition: 0.4s;
+}
+@media (max-width: 1350px) {
+  header {
+    width: 100%;
+  }
+  .home {
+    width: 90%;
+    padding: 150px 5% 0px 5%;
+    display: flex;
+    min-height: auto;
+  }
+  .home1 {
+    text-align: center;
+  }
+  .home2 {
+    text-align: center;
+  }
+  .article {
+    grid-template-columns: repeat(2, auto);
+  }
+  .home img {
+    width: 550px;
+  }
+  .home {
+    padding: 115px 0% 0px 0%;
+  }
+  .produits {
+    padding: 115px 0% 0px 0%;
+  }
+}
+@media (max-width: 1130px) {
+  #menu-icon {
+    display: initial;
+    margin-right: 25px;
+  }
+  header .navbar {
+    position: absolute;
+    top: -400px;
+    left: 0;
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    background: snow;
+    transition: 0.4s;
+    width: 100%;
+  }
+  header .navbar.active {
+    top: 100px;
+  }
+  .navbar a {
+    display: block;
+    padding: 0.9rem;
+  }
+}
+@media (max-width: 917.6px) {
+  .home,
+  .article {
+    display: block;
+    grid-template-columns: repeat(1, auto);
+    text-align: center;
+    width: 100%;
+  }
+  section {
+    width: 100%;
+    padding: 35px 0%;
+  }
+  #homeimg {
+    height: 250px;
+    width: 350px;
+    object-fit: cover;
+  }
+  h1 {
+    font-size: 40px;
+  }
+  header img {
+    width: 56%;
+    height: 90%;
+  }
+  .homeh2 {
+    font-size: 50px;
+  }
+}
+@media (max-width: 480px) {
+  .row img {
+    width: 300px;
+    object-fit: cover;
+  }
+  .home {
+    min-height: 0vh;
+    line-height: 20px;
+    padding: 110px 5% 0px 2%;
+  }
+  p {
+    line-height: 25px;
+  }
+}

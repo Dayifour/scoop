@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/contact.css">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/publier.css">
+    <link rel="stylesheet" href="../css/animation.css">
+    <title>contact</title>
+</head>
+<header>
+    <a href="index.html#home"> <h1><img src="../img/Logo5.png" alt="logo"></h1></a>
+    <div class="bx bx-menu" id="menu-icon"></div>
+    <nav>
+    <ul class ="navbar">
+        <li><a href="index.html#home">Acceuil</a></li>
+        <li><a href="index.html#produits">Produits</a></li>
+        <li><a href="publier.html">Publier</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="apropos.html">A propos</a></li>
+    </ul>
+    </nav>
+</header>
+<body>
+    <main>
+    <div class="poste">
+      <fieldset class="arrangement">
+        <h2>Nous envoyer un message</h2>
+        <p>Nous vous répondrons au plus rapidement possible</p>
+        <div>
+          <label for="nom">Nom :</label>
+          <input type="text" id="nom" class="pit" placeholder="Votre nom" required autofocus><br>
+          <label for="adresse">Adresse :</label>
+          <input type="text" class="pit" id="adresse" placeholder="Votre adresse" required><br>
+          <label for="message">Message :</label>
+          <textarea id="message" rows="5" placeholder="Contenu du courrier électronique" required></textarea><br>
+          <div class="regle">
+            <input type="reset" value="Annuler">
+          <input type="submit" id="sendBtn" value="Envoyer">
+          </div>
+        <div id="errorContainer" class="error-message"></div>
+     </div>
+    </fieldset>
+      </div>
+    </main>
+    <!-- Pied de page -->
+ <footer>
+    <p>&copy; Contactez-nous au 7994640</p>
+    <div class="social-media">
+      <p><i class="fab fa-facebook-f"></i></p>
+      <p><i class="fab fa-twitter"></i></p>
+      <p><i class="fab fa-instagram"></i></p>
+      <p><i class="fab fa-linkedin-in"></i></p>
+    </div>
+  </footer>
+   <!-- Fin du pied de page -->
+      <script src="../script/script.js"></script>
+      <script src="../script/contact.js"></script>
+</body>
+</html>

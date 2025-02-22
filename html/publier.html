@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/publier.css">
+	<link rel="stylesheet" href="../css/animation.css">
+    <title>publier</title>
+</head>
+<body>
+    <header>
+        <a href="index.html#home"> <h1><img src="../img/Logo5.png" alt="logo"></h1></a>
+		<div class="bx bx-menu" id="menu-icon"></div>
+        <nav>
+        <ul class ="navbar">
+            <li><a href="index.html#home">Acceuil</a></li>
+            <li><a href="index.html#produits">Produits</a></li>
+            <li><a href="publier.html">Publier</a></li>
+            <li><a href="contact.html">Contact</a></li>
+            <li><a href="apropos.html">A propos</a></li>
+        </ul>
+        </nav>
+    </header>
+    <main>
+    <div class="poste">
+    <fieldset class="arrangement">
+      <h2>Nouvelle publication</h2>
+      <p>Remplissez ce formulaire pour publier votre produit</p>
+    <form action="traitement.php" method="post" enctype="multipart/form-data">
+        <label for="name">Nom du produit : </label>
+        <input class="pit" type="text" name="name" id="name" minlength="3" maxlength="30" placeholder="Montre" required autofocus><br>
+        <label for="prixdup">Le prix du produit :</label>
+        <input class="pit" type="number" name="prixdup" id="prixdup" placeholder="5000F CFA"  required><br>
+        <label for="pictures">Choisissez une photo du produit :</label>
+        <input type="file" name="pictures" id="pictures"  required><br>
+        <label for="tel">Votre numéro de téléphone : +223</label>
+       <span></span><input class="pit" type="tel" name="tel" id="tel" placeholder="79994640"  required>
+      <div class="regle">
+        <input type="reset" value="Annuler">  
+        <input type="submit" value="Envoyer">
+       </div>
+    </form> 
+    </fieldset>
+</div>
+</main>
+ <!-- Pied de page -->
+ <footer>
+    <p>&copy; Contactez-nous au 7994640</p>
+    <div class="social-media">
+      <p><i class="fab fa-facebook-f"></i></p>
+      <p><i class="fab fa-twitter"></i></p>
+      <p><i class="fab fa-instagram"></i></p>
+      <p><i class="fab fa-linkedin-in"></i></p>
+    </div>
+  </footer>
+   <!-- Fin du pied de page -->
+    <script src="../script/script.js"></script>
+</body>
+</html>

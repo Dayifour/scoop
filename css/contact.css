@@ -1,0 +1,21 @@
+
+textarea{
+    width: 86%;
+    padding: 5px 5px;
+    font-size: 14px;
+    outline: none;
+    resize: none; 
+    margin-left: 60px
+  }
+  .error-message {
+    color: red;
+    margin-top: 10px;
+  }
+  .poste{
+    padding-bottom: 68px;
+  }
+  @media (max-width: 897px){
+  .poste{
+    padding-bottom: -23px;
+  }
+  }
