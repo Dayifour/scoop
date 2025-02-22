@@ -1,29 +1,28 @@
 @keyframes titre {
   0% {
     display: none;
-    transform: translateX(-300px);
+    /* transform: translateX(-300px); */
     opacity: 0;
   }
   50% {
     opacity: 0.5;
   }
   100% {
-    transform: translateX(0);
+    transform: translateX(0px);
     opacity: 1;
-    display: block;
+    display: flex;
   }
 }
 #bouge {
   transform: translateX(-300px);
   opacity: 0;
-  top: auto;
-  text-align: center;
-  justify-content: center;
-  align-items: center;
 }
 .tag {
-  animation: titre 2s ease-in 2s 0 normal;
+  animation: titre 3s ease-in 2s 0 normal;
   transition: 2s;
+  display: flex;
+  justify-content: center;
+  text-align: center;
 }
 #menu-icon,
 #menu-icon::before,

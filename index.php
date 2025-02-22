@@ -26,11 +26,54 @@ if (isset($_POST['contact'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accueil</title>
 
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/publier.css">
-    <link rel="stylesheet" href="css/animation.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="./css/style.css">
+    <link rel="stylesheet" href="./css/publier.css">
+    <link rel="stylesheet" href="./css/animation.css">
     <style>
+        .recherche {
+            display: flex;
+            justify-content: center;
+            margin-top: 20px;
+        }
+
+        #search {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 8px;
+            width: fit-content;
+        }
+
+        #search input[type="text"] {
+            padding: 8px 12px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+
+        #search input[type="text"]:focus {
+            border-color: darkorange;
+        }
+
+        #search input[type="submit"] {
+            padding: 8px 12px;
+            background: darkorange;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        #search input[type="submit"]:hover {
+            background: #0056b3;
+        }
+
         form {
             background: transparent;
             border: 0;
@@ -57,32 +100,53 @@ if (isset($_POST['contact'])) {
 </head>
 
 <body>
+    <header>
+        <a href="#" style="flex: 1;">
+            <h1><img class="logo" src="./image/Logo5.png" alt="logo"></h1>
+        </a>
+        <nav>
+            <ul class="navbar">
+                <?php if (!isset($_SESSION['contact'])) : ?>
+                    <li><a href="./login.php">Se connecter</a></li>
+                    <li><a href="user.php">S'inscrire</a></li>
+                <?php else : ?>
 
-    <div class="titre">
-        <form id="search" method="GET" action="index.php">
-            <input type="text" name="search" class="search" placeholder="recherche">
-            <input type="submit" value="search">
-        </form>
-    </div>
+                    <li><a href="index.php#home">Acceuil</a></li>
+                    <li><a href="product.php">Publier</a></li>
+                    <li><a href="vente.php?b=verification">Activiter</a></li>
+            </ul>
+        </nav>
+        <div class="bx bx-menu" id="menu-icon"></div>
+    <?php endif; ?>
+    </header>
+
     <section class="home" id="home">
         <div class="home1">
             <h2 class="homeh2">Du look</h2>
             <p class="homep">Ici, vous retrouverez vos chaussures de rêves aux prix exeptionnels</p>
             <p><a href="https://wa.me/22374815107?text=mohamed!">Envoyez-moi un e-mail!</a></p>
         </div>
-        <img id="homeimg" src="acc.jpg" alt="image-d'acceuil">
+        <img id="homeimg" src="./image/R.JPG" alt="image-d'acceuil">
     </section>
-    <h2 id="bouge">Nos produits</h2>
+    <h2 id="bouge" class="tag">Nos produits</h2>
+    <div class="recherche">
+        <form id="search" method="GET" action="index.php">
+            <input type="text" name="search" class="search" placeholder="recherche">
+            <input type="submit" value="search">
+        </form>
+    </div>
     <div id="list">
         <div class="article">
             <?php foreach ($produit as $prod) { ?>
-                <div class="row">
-
-                    <img src="<?= $prod['photo'] ?>" width="200" height="186"> <br>
+                <div class="row produits">
+                    <img src="./uploads/<?= $prod['photo'] ?>" width="200" height="186"> <br>
                     <?= $prod['nom'] ?>
-                    <span class="barré">
-                        <div class="old_prix"><?= $prod['prix'] + 2000 ?>FCFA </div>
-                    </span><span class="prix"><?= $prod['prix'] ?></span>
+                    <div class="prix_container">
+                        <span class="barré">
+                            <div class="old_prix"><?= $prod['prix'] - ($prod['prix'] / 20) ?>FCFA </div>
+                        </span><span class="prix"><?= $prod['prix'] ?> F CFA</span>
+                    </div>
+
                     <?php
                     $achats = $bd->query("select *  from users where id = {$prod['id_vendeur']}");
                     $achat = $achats->fetch();
@@ -95,26 +159,7 @@ if (isset($_POST['contact'])) {
         </div>
 
     </div>
-    <header>
-        <a href="#" style="flex: 1;">
-            <h1><img src="Logo5.png" alt="logo"></h1>
-        </a>
-        <?php if (!isset($_SESSION['contact'])) : ?>
-            <a href="/login">Se connecter</a>
-            <a href="user.php">S'inscrire</a><br>
-        <?php else : ?>
 
-            <div class="bx bx-menu" id="menu-icon"></div>
-            <nav>
-                <ul class="navbar">
-                    <li><a href="index.php#home">Acceuil</a></li>
-                    <li><a href="product.php">Publier</a></li>
-                    <li><a href="vente.php?b=verification">Activiter</a></li>
-                </ul>
-            </nav>
-
-        <?php endif; ?>
-    </header>
     <!-- Pied de page -->
     <footer>
         <p>&copy; Contactez-nous au 92773429 ou 79994640</p>
