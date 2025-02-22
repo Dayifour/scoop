@@ -139,12 +139,11 @@ if (isset($_POST['contact'])) {
         <div class="article">
             <?php foreach ($produit as $prod) { ?>
                 <div class="row produits">
-                    <img src="./uploads/<?= $prod['photo'] ?>" width="200" height="186"> <br>
+                    <img src="./uploads/<?= $prod['photo'] ?>"> <br>
                     <?= $prod['nom'] ?>
                     <div class="prix_container">
-                        <span class="barré">
-                            <div class="old_prix"><?= $prod['prix'] - ($prod['prix'] / 20) ?>FCFA </div>
-                        </span><span class="prix"><?= $prod['prix'] ?> F CFA</span>
+                        <span class="barree"><?= $prod['prix'] - ($prod['prix'] / 20) ?>FCFA</span>
+                        <span class="prix"><?= $prod['prix'] ?> F CFA</span>
                     </div>
 
                     <?php
@@ -152,7 +151,7 @@ if (isset($_POST['contact'])) {
                     $achat = $achats->fetch();
                     ?>
                     <div class="achat">
-                        <a class="achatbuton" href="https://wa.me/223<?= $achat['contact'] ?>?text=Salut!" ?>Commander</a>
+                        <a class="achatbuton" href="https://wa.me/223<?= $achat['contact'] ?>?text=Je suis intéressé par votre chaussure '<?= $prod['nom'] ?>'" ?>Commander</a>
                     </div>
                 </div>
             <?php } ?>

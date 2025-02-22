@@ -102,13 +102,14 @@ p {
 }
 .article {
   display: grid;
-  grid-template-columns: repeat(3, auto);
+  grid-template-columns: repeat(4, auto);
 }
 .row img {
-  width: 350px;
-  object-fit: cover;
+  width: 280px;
+  height: 300px;
+  object-fit: contain;
 }
-.barré {
+.barree {
   color: red;
   text-decoration: line-through;
 }
@@ -135,6 +136,7 @@ p {
 }
 .prix_container {
   display: flex;
+  gap: 10px;
   justify-content: center;
   align-items: center;
 }
