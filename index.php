@@ -1,22 +1,20 @@
 <?php
 session_start();
-$bd = new PDO('mysql:host=localhost;dbname=scoopbd', 'root');
-if (isset($_GET["search"])) {
-    $produit = $bd->query("select * from produit where nom like '%{$_GET["search"]}%'");
-} else {
-    $produit = $bd->query('select * from produit');
-}
-if (isset($_POST['contact'])) {
-    $users = $bd->prepare('select * from users where contact=? && pass=?');
-    $user = $users->execute([$_POST["contact"], $_POST["Mot_de_pass"]]);
-    if ($user) {
-        $_SESSION["contact"] = $_POST["contact"];
-        $_SESSION["pass"] = $_POST["Mot_de_pass"];
+try {
+    $bd = new PDO('mysql:host=localhost;dbname=scoopbd', 'root');
+    if (isset($_GET["search"])) {
+        $produit = $bd->query("select * from produit where nom like '%{$_GET["search"]}%'");
+    } else {
+        $produit = $bd->query('select * from produit');
     }
-} else if (isset($_GET['a'])) {
-    unset($_SESSION["id"]);
-    unset($_SESSION["contact"]);
+    if (isset($_GET['a'])) {
+        unset($_SESSION["id"]);
+        unset($_SESSION["role"]);
+    }
+} catch (error) {
+    echo "erreur de connexion veuille reessayer plus tard";
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -106,7 +104,8 @@ if (isset($_POST['contact'])) {
         </a>
         <nav>
             <ul class="navbar">
-                <?php if (!isset($_SESSION['contact'])) : ?>
+                <?php if (!isset($_SESSION["id"])) : ?>
+
                     <li><a href="./login.php">Se connecter</a></li>
                     <li><a href="user.php">S'inscrire</a></li>
                 <?php else : ?>
@@ -114,6 +113,7 @@ if (isset($_POST['contact'])) {
                     <li><a href="index.php#home">Acceuil</a></li>
                     <li><a href="product.php">Publier</a></li>
                     <li><a href="vente.php?b=verification">Activiter</a></li>
+                    <li><a href="index.php?a">deconnexion</a></li>
             </ul>
         </nav>
         <div class="bx bx-menu" id="menu-icon"></div>
@@ -130,7 +130,7 @@ if (isset($_POST['contact'])) {
     </section>
     <h2 id="bouge" class="tag">Nos produits</h2>
     <div class="recherche">
-        <form id="search" method="GET" action="index.php">
+        <form id="search" method="GET" action="index.php?search">
             <input type="text" name="search" class="search" placeholder="recherche">
             <input type="submit" value="search">
         </form>
@@ -147,8 +147,9 @@ if (isset($_POST['contact'])) {
                     </div>
 
                     <?php
-                    $achats = $bd->query("select *  from users where id = {$prod['id_vendeur']}");
+                    $achats = $bd->query("select *  from users where id = '" . $prod['id_vendeur'] . "'");
                     $achat = $achats->fetch();
+                    echo $achat['contact'];
                     ?>
                     <div class="achat">
                         <a class="achatbuton" href="https://wa.me/223<?= $achat['contact'] ?>?text=Je suis intéressé par votre chaussure '<?= $prod['nom'] ?>'" ?>Commander</a>

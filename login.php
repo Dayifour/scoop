@@ -1,3 +1,27 @@
+<?php
+session_start();
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+  $email = $_POST['email'];
+  $password = $_POST['password'];
+  // Connexion à la base de données
+  $host = 'localhost';
+  $db = 'scoopbd';
+  $user = 'root';
+  $dbpassword = '';
+
+  $dsn = "mysql:host=$host;dbname=$db;charset=utf8mb4";
+
+  $pdo = new PDO($dsn, $user, $dbpassword);
+  $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+  // Préparer et exécuter la requête
+
+
+  $stmt = $pdo->prepare("SELECT * FROM `users` WHERE email =?");
+  $stmt->execute([$email]);
+  $user = $stmt->fetch();
+}
+?>
 <!DOCTYPE html>
 <html lang="fr">
 
@@ -22,37 +46,19 @@
       </div>
       <?php
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $email = $_POST['email'];
-        $password = $_POST['password'];
-
-        // Connexion à la base de données
-        $conn = new mysqli('localhost', 'root', '', 'scoopbd');
-
-        // Vérifier la connexion
-        if ($conn->connect_error) {
-          die("Connection failed: " . $conn->connect_error);
-        }
-
-        // Préparer et exécuter la requête
-        $stmt = $conn->prepare("SELECT * FROM users WHERE email = ? AND password = ?");
-        $stmt->bind_param("ss", $email, $password);
-        $stmt->execute();
-        $result = $stmt->get_result();
-
         // Vérifier si l'utilisateur existe
-        if ($result->num_rows > 0) {
+        if ($user && password_verify($password, $user['password'])) {
+          $_SESSION["id"] = $user["id"];
+          $_SESSION["role"] = $user["role"];
           header("Location: index.php");
           exit();
         } else {
           echo "<p style='color:red;'>Email ou mot de passe incorrect</p>";
         }
-
-        // Fermer la connexion
-        $stmt->close();
-        $conn->close();
       }
       ?>
       <button type="submit">Se connecter</button>
+      <p><a href="forgot_password.php" style="text-decoration: none; color: blue;">Mot de passe oublié ?</a></p>
     </form>
   </div>
 </body>
