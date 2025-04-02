@@ -4,7 +4,7 @@ $bd = new PDO('mysql:host=localhost;dbname=scoopbd', 'root');
 // $user = $bd->query("select * from vente ");
 $user = $bd->query("select * from users where id = {$_SESSION["id"]}");
 $user = $user->fetch();
-$produits = $bd->query("select * from vente where id_acheteur = {$_SESSION["id"]} ");
+$produits = $bd->query("select * from produit where id_vendeur = {$_SESSION["id"]} ");
 $produits = $produits->fetchAll();
 if (!isset($_SESSION["id"])) {
     header('location: index.php');
@@ -95,7 +95,7 @@ if (!isset($_SESSION["id"])) {
                     // }
 
                 } else {
-                    echo '<p class="err">Aucun produit vendu!!!!!</p class="err">';
+                    echo '<p class="err">Aucun produit Publier!!!!!</p class="err">';
                 }
 
                 ?>
