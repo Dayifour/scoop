@@ -1,5 +1,6 @@
 <?php
 session_start();
+
 try {
     $bd = new PDO('mysql:host=localhost;dbname=scoopbd', 'root');
     if (isset($_GET["search"])) {
@@ -172,6 +173,33 @@ try {
             font-weight: 600;
             transition: var(--transition);
         }
+
+        .btn {
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            font-size: 0.9rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-outline {
+            margin-bottom: 4px;
+            background-color: transparent;
+            color: var(--primary);
+            border: 1px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background-color: rgba(255, 107, 0, 0.1);
+        }
+
+
+
 
         .hero-btn:hover {
             background-color: var(--primary-light);
@@ -446,7 +474,7 @@ try {
                     <?php else : ?>
                         <li><a href="index.php" class="active">Accueil</a></li>
                         <li><a href="product.php">Publier</a></li>
-                        <li><a href="vente.php?b=verification">Activités</a></li>
+                        <li><a href="vente.php">Activités</a></li>
                         <li><a href="index.php?a">Déconnexion</a></li>
                     <?php endif; ?>
                 </ul>
@@ -485,36 +513,27 @@ try {
                 $achat = $achats->fetch();
             ?>
                 <div class="product-card">
-                    <img src="./uploads/<?= $prod['photo'] ?>" alt="<?= $prod['nom'] ?>" class="product-image">
+                    <img src="uploads/<?= $prod['photo'] ?>" alt="<?= $prod['nom'] ?>" class="product-image">
                     <div class="product-info">
                         <h3 class="product-name"><?= $prod['nom'] ?></h3>
-                        <div class="price-container">
-                            <span class="old-price"><?= $prod['prix'] - ($prod['prix'] / 20) ?> FCFA</span>
-                            <span class="current-price"><?= $prod['prix'] ?> FCFA</span>
+                        <p class="product-price"><?= number_format($prod['prix'], 0, ',', ' ') ?> FCFA</p>
+                        <div class="product-actions">
+                            <a href="product_detail.php?id=<?= $prod['id'] ?>" class="btn btn-outline">
+                                <i class="fas fa-eye"></i> Voir
+                            </a>
+                            <a href="https://wa.me/223<?= $achat['contact'] ?>?text=Je suis intéressé par votre chaussure '<?= $prod['nom'] ?>'" class="order-btn">
+                                Commander
+                            </a>
                         </div>
-                        <p class="seller-info">Vendeur: <?= $achat['contact'] ?></p>
-                        <a href="https://wa.me/223<?= $achat['contact'] ?>?text=Je suis intéressé par votre chaussure '<?= $prod['nom'] ?>'" class="order-btn">
-                            Commander
-                        </a>
                     </div>
                 </div>
+
             <?php } ?>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="main-footer">
-        <div class="footer-content">
-            <p class="footer-contact">Contactez-nous au 92773429 ou 79994640</p>
-            <div class="social-links">
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-whatsapp"></i></a>
-            </div>
-            <p>&copy; <?= date('Y') ?> Scoop. Tous droits réservés.</p>
-        </div>
-    </footer>
+    <?php include("./components/footer.php") ?>
 
     <script src="script/script.js"></script>
 </body>

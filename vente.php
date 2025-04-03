@@ -391,7 +391,7 @@ $produits = $produits->fetchAll();
                 <ul class="nav-links">
                     <li><a href="index.php">Accueil</a></li>
                     <li><a href="product.php">Publier</a></li>
-                    <li><a href="vente.php?b=verification" class="active">Activités</a></li>
+                    <li><a href="vente.php" class="active">Activités</a></li>
                     <li><a href="index.php?a">Déconnexion</a></li>
                 </ul>
             </nav>
@@ -427,6 +427,9 @@ $produits = $produits->fetchAll();
                                     <i class="fas fa-chart-line"></i> Stats
                                 </a>
                             </div>
+                            <a href="delete_product.php?id=<?= $prod['id'] ?>" class="btn btn-outline" style="margin-top: 6px;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');">
+                                <i class="fas fa-trash"></i> Supprimer
+                            </a>
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -443,18 +446,7 @@ $produits = $produits->fetchAll();
     </section>
 
     <!-- Footer -->
-    <footer class="main-footer">
-        <div class="footer-content">
-            <p class="footer-contact">Contactez-nous au 92773429 ou 79994640</p>
-            <div class="social-links">
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-whatsapp"></i></a>
-            </div>
-            <p>&copy; <?= date('Y') ?> Scoop. Tous droits réservés.</p>
-        </div>
-    </footer>
+    <?php include("./components/footer.php") ?>
 
     <script>
         // Tab functionality can be added here

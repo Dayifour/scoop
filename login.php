@@ -18,6 +18,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   $stmt = $pdo->prepare("SELECT * FROM `users` WHERE email =?");
   $stmt->execute([$email]);
   $user = $stmt->fetch();
+  // Vérifier si l'utilisateur existe
+  if ($user && password_verify($password, $user['password'])) {
+    $_SESSION["id"] = $user["id"];
+    $_SESSION["role"] = $user["role"];
+    header("Location: index.php");
+    exit();
+  }
 }
 ?>
 <!DOCTYPE html>
@@ -315,15 +322,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
       </a>
       <nav>
         <ul class="nav-links">
-          <?php if (!isset($_SESSION["id"])) : ?>
-            <li><a href="login.php" class="active">Connexion</a></li>
-            <li><a href="user.php">Inscription</a></li>
-          <?php else : ?>
-            <li><a href="index.php">Accueil</a></li>
-            <li><a href="product.php">Publier</a></li>
-            <li><a href="vente.php?b=verification">Activités</a></li>
-            <li><a href="index.php?a">Déconnexion</a></li>
-          <?php endif; ?>
+          <li><a href="login.php" class="active">Connexion</a></li>
+          <li><a href="user.php">Inscription</a></li>
+
         </ul>
       </nav>
     </div>
@@ -342,7 +343,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           <label for="password">Mot de passe</label>
           <input type="password" id="password" name="password" placeholder="Votre mot de passe" required>
         </div>
-        <?php if ($_SERVER['REQUEST_METHOD'] == 'POST' && (!isset($user) || !password_verify($password, $user['password']))) : ?>
+        <?php if ($_SERVER['REQUEST_METHOD'] == 'POST' && (isset($user))) : ?>
           <p class="error-message">Email ou mot de passe incorrect</p>
         <?php endif; ?>
         <button type="submit" class="login-btn">Se connecter</button>
@@ -355,18 +356,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
   </section>
 
   <!-- Footer -->
-  <footer class="main-footer">
-    <div class="footer-content">
-      <p class="footer-contact">Contactez-nous au 92773429 ou 79994640</p>
-      <div class="social-links">
-        <a href="#"><i class="fab fa-facebook-f"></i></a>
-        <a href="#"><i class="fab fa-twitter"></i></a>
-        <a href="#"><i class="fab fa-instagram"></i></a>
-        <a href="#"><i class="fab fa-whatsapp"></i></a>
-      </div>
-      <p>&copy; <?= date('Y') ?> Scoop. Tous droits réservés.</p>
-    </div>
-  </footer>
+  <?php include("./components/footer.php") ?>
 </body>
 
 </html>

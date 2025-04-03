@@ -7,16 +7,17 @@ if (!isset($_SESSION["id"])) {
 
 $bd = new PDO('mysql:host=localhost;dbname=scoopbd', 'root');
 
-if (isset($_POST['produit']) && isset($_FILES['Photo'])) {
+if (isset($_POST['produit']) && isset($_FILES['Photo']) && isset($_POST['description'])) {
     $photo = 'uploads/' . $_FILES['Photo']['name'];
     move_uploaded_file($_FILES['Photo']['tmp_name'], $photo);
 
-    $req = $bd->prepare("INSERT INTO produit VALUES(null, ?, ?, ?, ?)");
+    $req = $bd->prepare("INSERT INTO produit VALUES(null, ?, ?, ?, ?, ?)");
     $req->execute([
         $_POST["produit"],
         $_POST["prix"],
         $_FILES['Photo']['name'],
-        $_SESSION["id"]
+        $_POST["description"],
+        $_SESSION["id"],
     ]);
 
     header('location: index.php');
@@ -191,7 +192,8 @@ if (isset($_POST['produit']) && isset($_FILES['Photo'])) {
         }
 
         .form-group input,
-        .form-group input[type="file"] {
+        .form-group input[type="file"],
+        .form-group textarea {
             padding: 0.75rem 1.25rem;
             border: 1px solid var(--border);
             border-radius: var(--border-radius);
@@ -199,7 +201,8 @@ if (isset($_POST['produit']) && isset($_FILES['Photo'])) {
             transition: var(--transition);
         }
 
-        .form-group input:focus {
+        .form-group input:focus,
+        .form-group textarea:focus {
             outline: none;
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(255, 107, 0, 0.2);
@@ -339,7 +342,7 @@ if (isset($_POST['produit']) && isset($_FILES['Photo'])) {
                 <ul class="nav-links">
                     <li><a href="index.php">Accueil</a></li>
                     <li><a href="product.php" class="active">Publier</a></li>
-                    <li><a href="vente.php?b=verification">Activités</a></li>
+                    <li><a href="vente.php ">Activités</a></li>
                     <li><a href="index.php?a">Déconnexion</a></li>
                 </ul>
             </nav>
@@ -372,6 +375,12 @@ if (isset($_POST['produit']) && isset($_FILES['Photo'])) {
                     <input type="file" name="Photo" id="Photo" accept="image/*" required>
                 </div>
 
+                <div class="form-group">
+                    <label for="description">Description du produit</label>
+                    <textarea name="description" id="description" rows="4" minlength="10" maxlength="500"
+                        placeholder="Décrivez votre produit en quelques mots..." required></textarea>
+                </div>
+
                 <div class="fee-info" id="taux">
                     Le taux de 1% sera appliqué à votre produit (0 FCFA pour le moment)
                 </div>
@@ -385,18 +394,7 @@ if (isset($_POST['produit']) && isset($_FILES['Photo'])) {
     </section>
 
     <!-- Footer -->
-    <footer class="main-footer">
-        <div class="footer-content">
-            <p class="footer-contact">Contactez-nous au 92773429 ou 79994640</p>
-            <div class="social-links">
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-whatsapp"></i></a>
-            </div>
-            <p>&copy; <?= date('Y') ?> Scoop. Tous droits réservés.</p>
-        </div>
-    </footer>
+    <?php include("./components/footer.php") ?>
 
     <script>
         document.getElementById("prix").addEventListener('input', function() {

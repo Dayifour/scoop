@@ -4,25 +4,29 @@ $bd = new PDO('mysql:host=localhost;dbname=scoopbd', 'root');
 $users = $bd->query('select * from users');
 
 if (isset($_POST['nom'])) {
-    foreach ($users as $user) {
-        if ($user["Contact"] == $_POST["contact"]) {
-            $_SESSION["contact"] = $_POST["contact"];
-            header('location: index.php');
-            exit;
-        }
+
+
+    // Vérification de l'existence de l'email ou du contact
+    $stmt = $bd->prepare("SELECT * FROM users WHERE email = :email OR contact = :contact");
+    $stmt->execute([
+        ':email' => $_POST["email"],
+        ':contact' => $_POST["contact"]
+    ]);
+    if ($stmt->rowCount() > 0) {
+        echo "<script>alert('Email ou numéro de téléphone déjà utilisé.');</script>";
+    } else {
+        $hashedPassword = password_hash($_POST["password"], PASSWORD_DEFAULT);
+
+        $bd->exec("INSERT INTO users VALUES ('" . null . "',
+            '" . $_POST["nom"] . "',
+            '" . $_POST["prenom"] . "', 
+            '" . $_POST["contact"] . "',
+            '" . "Client" . "',
+            '" . $_POST["email"] . "',
+            '" . $hashedPassword . "')");
+        header('location: index.php');
+        exit;
     }
-
-    $hashedPassword = password_hash($_POST["password"], PASSWORD_DEFAULT);
-
-    $bd->exec("INSERT INTO users VALUES ('" . null . "',
-        '" . $_POST["nom"] . "',
-        '" . $_POST["prenom"] . "', 
-        '" . $_POST["contact"] . "',
-        '" . "Client" . "',
-        '" . $_POST["email"] . "',
-        '" . $hashedPassword . "')");
-    header('location: index.php');
-    exit;
 }
 ?>
 <!DOCTYPE html>
@@ -318,7 +322,7 @@ if (isset($_POST['nom'])) {
                     <?php else : ?>
                         <li><a href="index.php">Accueil</a></li>
                         <li><a href="product.php">Publier</a></li>
-                        <li><a href="vente.php?b=verification">Activités</a></li>
+                        <li><a href="vente.php">Activités</a></li>
                         <li><a href="index.php?a">Déconnexion</a></li>
                     <?php endif; ?>
                 </ul>
@@ -372,11 +376,7 @@ if (isset($_POST['nom'])) {
     </main>
 
     <!-- Footer -->
-    <footer class="main-footer">
-        <div class="footer-content">
-            <p>&copy; <?php echo date('Y'); ?> Scoop. Tous droits réservés.</p>
-        </div>
-    </footer>
+    <?php include("./components/footer.php") ?>
 </body>
 
 </html>

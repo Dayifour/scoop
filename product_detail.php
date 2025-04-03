@@ -1,10 +1,14 @@
 <?php
 session_start();
-$bd = new PDO('mysql:host=localhost;dbname=base2', 'root');
+if (!isset($_SESSION['id'])) {
+    header('location: login.php');
+    exit;
+}
+$bd = new PDO('mysql:host=localhost;dbname=scoopbd', 'root');
 if (isset($_GET['id'])) {
     $produit = $bd->query("select * from produit where id={$_GET['id']}");
     $prod = $produit->fetch();
-    $achats = $bd->query("select * from enregistrement where id = {$prod['id_vendeur']}");
+    $achats = $bd->query("select * from users where id = {$prod['id_vendeur']}");
     $achat = $achats->fetch();
 } else {
     header('location: index.php');
@@ -339,13 +343,13 @@ if (isset($_GET['id'])) {
             </a>
             <nav>
                 <ul class="nav-links">
-                    <?php if (!isset($_SESSION['contact'])) : ?>
+                    <?php if (!isset($_SESSION['id'])) : ?>
                         <li><a href="login.php">Connexion</a></li>
                         <li><a href="user.php">Inscription</a></li>
                     <?php else : ?>
                         <li><a href="index.php">Accueil</a></li>
                         <li><a href="product.php">Publier</a></li>
-                        <li><a href="vente.php?b=verification">Activités</a></li>
+                        <li><a href="vente.php">Activités</a></li>
                         <li><a href="index.php?a">Déconnexion</a></li>
                     <?php endif; ?>
                 </ul>
@@ -357,7 +361,7 @@ if (isset($_GET['id'])) {
     <section class="product-detail-section">
         <div class="product-container">
             <div class="product-images">
-                <img src="<?= $prod['photo'] ?>" alt="<?= $prod['nom'] ?>" class="main-image">
+                <img src="./uploads/<?= $prod['photo'] ?>" alt="<?= $prod['nom'] ?>" class="main-image">
             </div>
 
             <div class="product-info">
@@ -368,19 +372,19 @@ if (isset($_GET['id'])) {
 
                     <div class="product-seller">
                         <span class="seller-label">Vendeur:</span>
-                        <span class="seller-contact"><?= $achat['Contact'] ?></span>
+                        <span class="seller-contact"><?= $achat['contact'] ?></span>
                     </div>
                 </div>
 
-                <?php if (isset($prod['description']) && !empty($prod['description'])) : ?>
+                <?php if (isset($prod['Description']) && !empty($prod['Description'])) : ?>
                     <div class="product-description">
                         <h3>Description</h3>
-                        <p><?= $prod['description'] ?></p>
+                        <p><?= $prod['Description'] ?></p>
                     </div>
                 <?php endif; ?>
 
                 <div class="action-buttons">
-                    <a href="https://wa.me/223<?= $achat['Contact'] ?>?text=Je suis intéressé par votre produit '<?= $prod['nom'] ?>'"
+                    <a href="https://wa.me/223<?= $achat['contact'] ?>?text=Je suis intéressé par votre produit '<?= $prod['nom'] ?>'"
                         class="btn btn-primary">
                         <i class="fab fa-whatsapp"></i> Commander via WhatsApp
                     </a>
@@ -393,18 +397,7 @@ if (isset($_GET['id'])) {
     </section>
 
     <!-- Footer -->
-    <footer class="main-footer">
-        <div class="footer-content">
-            <p class="footer-contact">Contactez-nous au 92773429 ou 79994640</p>
-            <div class="social-links">
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-whatsapp"></i></a>
-            </div>
-            <p>&copy; <?= date('Y') ?> Scoop. Tous droits réservés.</p>
-        </div>
-    </footer>
+    <?php include("./components/footer.php") ?>
 </body>
 
 </html>
