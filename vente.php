@@ -5,11 +5,40 @@ if (!isset($_SESSION["id"])) {
     exit;
 }
 
-$bd = new PDO('mysql:host=localhost;dbname=scoopbd', 'root');
-$user = $bd->query("SELECT * FROM users WHERE id = {$_SESSION["id"]}");
-$user = $user->fetch();
-$produits = $bd->query("SELECT * FROM produit WHERE id_vendeur = {$_SESSION["id"]} ");
-$produits = $produits->fetchAll();
+try {
+    $bd = new PDO('mysql:host=localhost;dbname=scoopbd', 'root', '');
+    $bd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // Récupérer l'utilisateur
+    $stmt = $bd->prepare("SELECT * FROM users WHERE id = :id");
+    $stmt->bindParam(':id', $_SESSION["id"], PDO::PARAM_INT);
+    $stmt->execute();
+    $user = $stmt->fetch();
+
+    if (!$user) {
+        header('location: index.php');
+        exit;
+    }
+
+    // Vérifier si l'utilisateur est un admin
+    $isAdmin = ($user['role'] === 'Admin');
+
+    // Récupérer les produits selon le rôle (sans le tri par date)
+    if ($isAdmin) {
+        $stmt = $bd->prepare("SELECT * FROM produit");
+    } else {
+        $stmt = $bd->prepare("SELECT * FROM produit WHERE id_vendeur = :id_vendeur");
+        $stmt->bindParam(':id_vendeur', $_SESSION["id"], PDO::PARAM_INT);
+    }
+
+    $stmt->execute();
+    $produits = $stmt->fetchAll();
+
+    // Si vous voulez inverser l'ordre pour avoir les plus récents en premier
+    $produits = array_reverse($produits);
+} catch (PDOException $e) {
+    die("Erreur de base de données : " . $e->getMessage());
+}
 ?>
 <!DOCTYPE html>
 <html lang="fr">
@@ -17,7 +46,7 @@ $produits = $produits->fetchAll();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mes activités - Scoop</title>
+    <title><?= $isAdmin ? 'Toutes les activités' : 'Mes activités' ?> - Scoop</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -166,6 +195,15 @@ $produits = $produits->fetchAll();
             font-weight: 500;
         }
 
+        .admin-badge {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.2rem 0.5rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            margin-left: 0.5rem;
+        }
+
         .activities-tabs {
             display: flex;
             gap: 1rem;
@@ -233,6 +271,18 @@ $produits = $produits->fetchAll();
             font-weight: 700;
             color: var(--primary);
             font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .product-vendor {
+            font-size: 0.9rem;
+            color: var(--gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .product-date {
+            font-size: 0.8rem;
+            color: var(--gray);
             margin-bottom: 1rem;
         }
 
@@ -401,35 +451,66 @@ $produits = $produits->fetchAll();
     <!-- Activities Section -->
     <section class="activities-section">
         <div class="activities-header">
-            <h1 class="activities-title">Mes activités</h1>
-            <p class="user-greeting">Bonjour, <?= $user['nom'] ?> <?= $user['prenom'] ?></p>
+            <h1 class="activities-title"><?= $isAdmin ? 'Toutes les activités' : 'Mes activités' ?></h1>
+            <p class="user-greeting">
+                Bonjour, <?= $user['nom'] ?> <?= $user['prenom'] ?>
+                <?php if ($isAdmin): ?>
+                    <span class="admin-badge">Admin</span>
+                <?php endif; ?>
+            </p>
         </div>
 
         <div class="activities-tabs">
-            <button class="tab-btn active">Mes publications</button>
+            <button class="tab-btn active"><?= $isAdmin ? 'Toutes les publications' : 'Mes publications' ?></button>
             <button class="tab-btn">Ventes</button>
             <button class="tab-btn">Historique</button>
         </div>
 
         <?php if (!empty($produits)) : ?>
             <div class="products-grid">
-                <?php foreach ($produits as $prod) : ?>
+                <?php foreach ($produits as $prod) :
+                    // Récupérer les infos du vendeur pour l'affichage admin
+                    $vendorInfo = $isAdmin ? $bd->query("SELECT nom, prenom FROM users WHERE id = {$prod['id_vendeur']}")->fetch() : null;
+                ?>
                     <div class="product-card">
                         <img src="uploads/<?= $prod['photo'] ?>" alt="<?= $prod['nom'] ?>" class="product-image">
                         <div class="product-info">
                             <h3 class="product-name"><?= $prod['nom'] ?></h3>
                             <p class="product-price"><?= number_format($prod['prix'], 0, ',', ' ') ?> FCFA</p>
+
+                            <?php if ($isAdmin): 
+    // Section vendeur
+    if (!empty($prod['id_vendeur'])) {
+        $vendorStmt = $bd->prepare("SELECT nom, prenom FROM users WHERE id = ?");
+        $vendorStmt->execute([$prod['id_vendeur']]);
+        $vendorInfo = $vendorStmt->fetch();
+        
+        if ($vendorInfo): ?>
+            <p class="product-vendor">Vendeur: <?= htmlspecialchars($vendorInfo['prenom']) ?> <?= htmlspecialchars($vendorInfo['nom']) ?></p>
+        <?php endif;
+    }
+
+    // Section date - à adapter avec votre colonne de date si elle existe
+    $dateColumn = 'date_creation'; // Remplacez par votre colonne
+    if (isset($prod[$dateColumn]) && !empty($prod[$dateColumn])): ?>
+        <p class="product-date">Publié le: <?= date('d/m/Y H:i', strtotime($prod[$dateColumn])) ?></p>
+    <?php endif; ?>
+<?php endif; ?>
                             <div class="product-actions">
                                 <a href="product_detail.php?id=<?= $prod['id'] ?>" class="btn btn-outline">
                                     <i class="fas fa-eye"></i> Voir
                                 </a>
-                                <a href="edit_product.php?id=<?= $prod['id'] ?>" class="btn btn-primary">
-                                    <i class="fas fa-edit"></i> Modifier
-                                </a>
+                                <?php if (!$isAdmin || $prod['id_vendeur'] == $_SESSION['id']): ?>
+                                    <a href="edit_product.php?id=<?= $prod['id'] ?>" class="btn btn-primary">
+                                        <i class="fas fa-edit"></i> Modifier
+                                    </a>
+                                <?php endif; ?>
                             </div>
-                            <a href="delete_product.php?id=<?= $prod['id'] ?>" class="btn btn-outline" style="margin-top: 6px;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');">
-                                <i class="fas fa-trash"></i> Supprimer
-                            </a>
+                            <?php if (!$isAdmin || $prod['id_vendeur'] == $_SESSION['id']): ?>
+                                <a href="delete_product.php?id=<?= $prod['id'] ?>" class="btn btn-outline" style="margin-top: 6px;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');">
+                                    <i class="fas fa-trash"></i> Supprimer
+                                </a>
+                            <?php endif; ?>
                         </div>
                     </div>
                 <?php endforeach; ?>
@@ -437,7 +518,7 @@ $produits = $produits->fetchAll();
         <?php else : ?>
             <div class="empty-state">
                 <i class="fas fa-box-open"></i>
-                <p>Vous n'avez publié aucun produit pour le moment</p>
+                <p><?= $isAdmin ? 'Aucun produit publié pour le moment' : 'Vous n\'avez publié aucun produit pour le moment' ?></p>
                 <a href="product.php" class="btn btn-primary btn-large">
                     <i class="fas fa-plus"></i> Publier un produit
                 </a>
