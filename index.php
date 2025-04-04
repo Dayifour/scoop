@@ -521,9 +521,13 @@ try {
                             <a href="product_detail.php?id=<?= $prod['id'] ?>" class="btn btn-outline">
                                 <i class="fas fa-eye"></i> Voir
                             </a>
-                            <a href="https://wa.me/223<?= $achat['contact'] ?>?text=Je suis intéressé par votre chaussure '<?= $prod['nom'] ?>'" class="order-btn">
-                                Commander
-                            </a>
+                            <?php if (!empty($achat['contact']) && !empty($prod['nom'])): ?>
+                                <a href="https://wa.me/223<?= htmlspecialchars($achat['contact']) ?>?text=Je suis intéressé par votre chaussure '<?= urlencode($prod['nom']) ?>'" class="order-btn">
+                                    Commander
+                                </a>
+                            <?php else: ?>
+                                <p>Informations manquantes pour la commande.</p>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
