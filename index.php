@@ -216,7 +216,7 @@ try {
             max-width: 100%;
             height: auto;
             border-radius: var(--border-radius);
-            box-shadow: var(--shadow-lg);
+
         }
 
         /* ===== PRODUCTS SECTION ===== */
@@ -490,7 +490,7 @@ try {
             <a href="https://wa.me/22374815107?text=Bonjour!" class="hero-btn">Contactez-nous</a>
         </div>
         <div class="hero-image">
-            <img src="./image/R.JPG" alt="Collection de chaussures">
+            <img src="./image/R.png" alt="Collection de chaussures">
         </div>
     </section>
 
