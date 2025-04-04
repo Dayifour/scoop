@@ -423,8 +423,8 @@ $produits = $produits->fetchAll();
                                 <a href="product_detail.php?id=<?= $prod['id'] ?>" class="btn btn-outline">
                                     <i class="fas fa-eye"></i> Voir
                                 </a>
-                                <a href="#" class="btn btn-primary">
-                                    <i class="fas fa-chart-line"></i> Stats
+                                <a href="edit_product.php?id=<?= $prod['id'] ?>" class="btn btn-primary">
+                                    <i class="fas fa-edit"></i> Modifier
                                 </a>
                             </div>
                             <a href="delete_product.php?id=<?= $prod['id'] ?>" class="btn btn-outline" style="margin-top: 6px;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce produit ?');">

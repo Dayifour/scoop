@@ -15,6 +15,14 @@ if (isset($_GET['id'])) {
     $product = $query->fetch();
 
     if ($product) {
+        // Supprimer l'image associée
+        if (!empty($product['image'])) {
+            $imagePath = __DIR__ . '/uploads/' . $product['image'];
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+            }
+        }
+
         // Supprimer le produit
         $deleteQuery = $bd->prepare("DELETE FROM produit WHERE id = :id");
         $deleteQuery->execute(['id' => $productId]);

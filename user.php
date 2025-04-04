@@ -3,9 +3,9 @@ session_start();
 $bd = new PDO('mysql:host=localhost;dbname=scoopbd', 'root');
 $users = $bd->query('select * from users');
 
+$errors = []; // Tableau pour stocker les messages d'erreur
+
 if (isset($_POST['nom'])) {
-
-
     // Vérification de l'existence de l'email ou du contact
     $stmt = $bd->prepare("SELECT * FROM users WHERE email = :email OR contact = :contact");
     $stmt->execute([
@@ -13,7 +13,7 @@ if (isset($_POST['nom'])) {
         ':contact' => $_POST["contact"]
     ]);
     if ($stmt->rowCount() > 0) {
-        echo "<script>alert('Email ou numéro de téléphone déjà utilisé.');</script>";
+        $errors[] = "Email ou numéro de téléphone déjà utilisé.";
     } else {
         $hashedPassword = password_hash($_POST["password"], PASSWORD_DEFAULT);
 
@@ -338,6 +338,15 @@ if (isset($_POST['nom'])) {
                     <h2>Créer un compte</h2>
                 </div>
                 <div class="auth-body">
+                    <!-- Affichage des erreurs -->
+                    <?php if (!empty($errors)) : ?>
+                        <div style="color: red; margin-bottom: 1rem;">
+                            <?php foreach ($errors as $error) : ?>
+                                <p><?php echo $error; ?></p>
+                            <?php endforeach; ?>
+                        </div>
+                    <?php endif; ?>
+
                     <form action="user.php" method="post">
                         <div class="form-group">
                             <label for="prenom" class="form-label">Prénom</label>
