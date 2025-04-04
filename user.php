@@ -1,31 +1,31 @@
 <?php
 session_start();
 $bd = new PDO('mysql:host=localhost;dbname=scoopbd', 'root');
+$bd->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 $users = $bd->query('select * from users');
 
 $errors = []; // Tableau pour stocker les messages d'erreur
 
 if (isset($_POST['nom'])) {
     // Vérification de l'existence de l'email ou du contact
-    $stmt = $bd->prepare("SELECT * FROM users WHERE email = :email OR contact = :contact");
-    $stmt->execute([
-        ':email' => $_POST["email"],
-        ':contact' => $_POST["contact"]
-    ]);
-    if ($stmt->rowCount() > 0) {
-        $errors[] = "Email ou numéro de téléphone déjà utilisé.";
-    } else {
-        $hashedPassword = password_hash($_POST["password"], PASSWORD_DEFAULT);
+    $hashedPassword = password_hash($_POST["password"], PASSWORD_DEFAULT);
 
-        $bd->exec("INSERT INTO users VALUES ('" . null . "',
-            '" . $_POST["nom"] . "',
-            '" . $_POST["prenom"] . "', 
-            '" . $_POST["contact"] . "',
-            '" . "Client" . "',
-            '" . $_POST["email"] . "',
-            '" . $hashedPassword . "')");
-        header('location: index.php');
+    $stmt = $bd->prepare("INSERT INTO users (nom, prenom, contact, role, email, password) 
+                      VALUES (:nom, :prenom, :contact, 'Client', :email, :password)");
+
+    $success = $stmt->execute([
+        ':nom' => $_POST["nom"],
+        ':prenom' => $_POST["prenom"],
+        ':contact' => $_POST["contact"],
+        ':email' => $_POST["email"],
+        ':password' => $hashedPassword
+    ]);
+
+    if ($success) {
+        header('Location: index.php');
         exit;
+    } else {
+        $errors[] = "Erreur lors de l'enregistrement.";
     }
 }
 ?>
