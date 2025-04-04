@@ -391,6 +391,9 @@ if (isset($_GET['id'])) {
                     <a href="index.php" class="btn btn-outline">
                         <i class="fas fa-arrow-left"></i> Retour aux produits
                     </a>
+                    <a href="generate_pdf.php?id=<?= $prod['id'] ?>" class="btn btn-primary">
+                        <i class="fas fa-file-pdf"></i> Télécharger en PDF
+                    </a>
                 </div>
             </div>
         </div>
