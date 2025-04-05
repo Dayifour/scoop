@@ -71,4 +71,4 @@ index.php            # Main product listing
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
-Created by: **Dayifour** and **Doubafly**.
+Created by: [Dayifour](https://github.com/Dayifour) and [Doubafly](https://github.com/Doubafly)
